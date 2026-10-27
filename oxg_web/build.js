@@ -43,7 +43,7 @@ function md2html(src) {
   return out.join("\n");
 }
 const DOCS = [["effects", "EFFECTS.md", "Effects, 3D engine, tricks"], ["reverse", "REVERSE.md", "The release and the assembly"], ["scenes", "scenes.md", "3D scene tables"]];
-const nav = cur => `<nav><a href="../index.html">&larr; the demo</a>${DOCS.map(d => d[0] === cur ? `<b>${d[2]}</b>` : `<a href="${d[0]}.html">${d[2]}</a>`).join("")}</nav>`;
+const nav = cur => `<nav><a href="../index.html">&larr; the demo</a><a href="https://github.com/kassoulet/Contrast_by_Oxygene">GitHub</a>${DOCS.map(d => d[0] === cur ? `<b>${d[2]}</b>` : `<a href="${d[0]}.html">${d[2]}</a>`).join("")}</nav>`;
 fs.mkdirSync(path.join(__dirname, "site/docs"), { recursive: true });
 for (const [name, file, title] of DOCS) {
   const f = path.join(__dirname, "../oxg_out", file); if (!fs.existsSync(f)) continue;
