@@ -11,3 +11,4 @@ oxg_web/site/oxg.js
 oxg_web/site/assets/CONTRAST.BIN
 __pycache__/
 node_modules/
+oxg_web/site/docs/
