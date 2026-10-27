@@ -6,7 +6,7 @@
 <title>CONTRAST (Oxygene, 1996) in JavaScript</title>
 <style>
   :root { color-scheme: dark; }
-  html, body { margin: 0; height: 100%; background: #000; color: #bbb; font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+  html, body { margin: 0; height: 100%; overflow-x: hidden; background: #000; color: #bbb; font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
   body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
   #wrap { position: relative; width: min(100vw, calc((100vh - 60px) * 4 / 3)); aspect-ratio: 4 / 3; background: #000; }
   canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
@@ -15,15 +15,36 @@
   #info { max-width: 720px; padding: 0 16px; font-size: 12px; color: #888; text-align: center; }
   #credits { position: absolute; inset: 0; display: none; padding: 6%; box-sizing: border-box; background: #000; color: #ddd; white-space: pre; font-size: clamp(8px, 1.9vw, 16px); }
   a { color: #8ab; }
+  #bar { display: flex; align-items: center; gap: 8px; width: min(100vw, calc((100vh - 60px) * 4 / 3)); padding: 0 6px; box-sizing: border-box; }
+  #bar button, #bar select { background: #222; color: #ddd; border: 1px solid #444; border-radius: 4px; font: inherit; padding: 2px 8px; cursor: pointer; }
+  #bar input[type=range] { flex: 1; min-width: 60px; accent-color: #c6a; }
+  #bar label { white-space: nowrap; cursor: pointer; }
+  #time { min-width: 7.5em; text-align: right; font-variant-numeric: tabular-nums; }
+  #seeking { position: absolute; left: 8px; top: 8px; padding: 2px 8px; background: rgba(0,0,0,.7); color: #fff; border-radius: 4px; display: none; }
+  /* optional CRT look: smoothing, scanlines (one dark band per source line), phosphor tint, vignette, rounded glass */
+  #wrap.crt canvas { image-rendering: auto; filter: saturate(1.2) contrast(1.08) brightness(1.1); border-radius: 3.5% / 4.5%; }
+  #wrap.crt::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: 3.5% / 4.5%;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%),
+                repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 40%, rgba(0,0,0,.32) 40%, rgba(0,0,0,.32) 100%);
+    background-size: 100% 100%, 100% 0.5%; box-shadow: inset 0 0 40px rgba(0,0,0,.6); }
 </style>
 </head>
 <body>
 <div id="wrap">
   <canvas id="screen" width="320" height="200"></canvas>
   <pre id="credits"></pre>
+  <div id="seeking">seeking&hellip;</div>
   <div id="start"><b>CONTRAST</b><span>a demo by OXYGENE (1996), run from its original data by a JavaScript port.<br>Click to start (sound on).</span><span id="status">loading&hellip;</span></div>
 </div>
-<div id="info">320&times;200 stretched to 4:3, 70&nbsp;Hz ticks. F: fullscreen &middot; P: pause. Needs <code>assets/CONTRAST.BIN</code> (the demo's data archive).</div>
+<div id="bar">
+  <button id="pp" title="play / pause (space)">&#9208;</button>
+  <input id="seek" type="range" min="0" max="1" value="0" step="1" aria-label="position">
+  <span id="time">0:00 / 0:00</span>
+  <select id="chap" aria-label="scene"></select>
+  <label><input type="checkbox" id="crt"> CRT</label>
+  <button id="fs" title="fullscreen (F)">&#9974;</button>
+</div>
+<div id="info">320&times;200 stretched to 4:3, 70&nbsp;Hz ticks. Space: pause &middot; &larr;/&rarr;: seek 5 s &middot; C: CRT &middot; F: fullscreen. Seeking inside a scene replays it from its start, which takes a moment.</div>
 <script src="oxg.js"></script>
 <script src="player.js"></script>
 </body>
