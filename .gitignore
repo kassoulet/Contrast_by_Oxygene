@@ -1,0 +1,13 @@
+# generated or too big (regenerate with the tools)
+oxg_out/rec_a.rawz
+oxg_out/v_*.bin
+oxg_out/vec_*.bin
+oxg_out/code.bin
+oxg_out/data.bin
+oxg_out/png/
+oxg_out/shots/
+oxg_out/*.log
+oxg_web/site/oxg.js
+oxg_web/site/assets/CONTRAST.BIN
+__pycache__/
+node_modules/

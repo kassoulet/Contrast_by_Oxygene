@@ -1,0 +1,53 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Bundle the port and copy the data
+        working-directory: oxg_web
+        run: node build.js
+      - name: Smoke test (first 8,000 ticks run without error)
+        working-directory: oxg_web
+        run: |
+          node -e '
+          const fs=require("fs");globalThis.OXG_TRIG16=fs.readFileSync("data/trig16.bin").buffer.slice(0);
+          const {chain}=require("./src/sequence"),{parseArchive}=require("./src/archive");
+          const files=parseArchive(fs.readFileSync("../oxg_cont/CONTRAST.BIN")),runs=JSON.parse(fs.readFileSync("site/assets/sync.json")).runs;
+          const at=i=>{let v=runs[0][1];for(const [t,s] of runs){if(t<=i)v=s;else break}return v};
+          const seq=chain(files);let sum=0;for(let i=0;i<8000;i++){const r=seq.step(at(i));if(!r)throw new Error("ended early");sum+=r.frame[(i*7919)%64000]}
+          console.log("ok",sum)'
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: oxg_web/site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

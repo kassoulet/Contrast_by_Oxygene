@@ -1,0 +1,72 @@
+
+
+
+                ЫЫЫЫЫ ЫЫ  ЫЫ ЫЫ  ЫЫ  ЫЫЫЫЫ  ЫЫЫЫЫ ЫЫЫЫЫ   ЫЫЫЫЫ
+               ЫЫ  ЫЫ ЫЫ  ЫЫ ЫЫ  ЫЫ ЫЫ     ЫЫ     ЫЫ  ЫЫ ЫЫ
+               ЫЫ  ЫЫ ЫЫ  ЫЫ ЫЫ  ЫЫ ЫЫ     ЫЫ     ЫЫ  ЫЫ ЫЫ
+               ЫЫ  ЫЫ  ЫЫЫЫ   ЫЫЫЫЫ ЫЫ ЫЫЫ ЫЫЫЫЫ  ЫЫ  ЫЫ ЫЫЫЫЫ
+               ЫЫ  ЫЫ ЫЫ  ЫЫ     ЫЫ ЫЫ  ЫЫ ЫЫ     ЫЫ  ЫЫ ЫЫ
+               ЫЫЫЫЫЫ ЫЫ  ЫЫ ЫЫЫЫЫ  ЫЫЫЫЫЫ ЫЫЫЫЫЫ ЫЫ  ЫЫ ЫЫЫЫЫЫ
+
+                            c  o  n  t  r  a  s  t
+
+				   - 1996 -
+
+               Code ..................................... OXBAB
+
+               3d Graphics ....................... SPIRAL - MON
+
+               Soundtrack ........................ CLAWZ/IMPACT
+
+	       Sound System ........... MIDAS by Sahara Surfers
+
+
+
+                                FINAL VERSION
+
+
+
+For swapping:
+
+DATA/OXYGENE
+VINGRIEF Fabrice
+3 all‚e des Tamaris
+91330 YERRES
+FRANCE
+
+
+For any coding reason:
+
+OXBAB/OXYGENE
+BALESTRA Christophe
+19 rue du Moulin de Senlis
+91230 MONTGERON
+FRANCE
+
+email: OXYGENE@ACE.EPITA.FR
+
+For bitmap graphics:
+
+MON/OXYGENE
+SIMON Nicolas
+66 route de Longpont
+91700 SAINT-GENEVIEVE DES BOIS
+FRANCE
+
+For 3DS and commercial reasons:
+
+SPIRAL/OXYGENE
+Alexandre ILIC
+18 avenue Maurice Thorez
+91270 VIGNEUX/SEINE
+FRANCE
+
+For music (No module swapping):
+
+CLAWZ/IMPACT
+Mathieu BERTHAUD
+25 rue du Mail
+91600 SAVIGNY/ORGE
+FRANCE
+
+email: MATHIEU.BERTHAUD@ACE.EPITA.FR

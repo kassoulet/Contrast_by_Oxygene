@@ -1,0 +1,10 @@
+"use strict";
+const fs = require("fs"), path = require("path");
+const { load } = require("./vec"), { bumpTable } = require("../src/bump"), { trig } = require("../src/tables");
+const { parseArchive } = require("../src/archive"), { readGif } = require("../src/gif");
+const files = parseArchive(fs.readFileSync(path.join(__dirname, "../../oxg_cont/CONTRAST.BIN")));
+const v = load(path.join(__dirname, "../../oxg_out/vec_bump_a.bin")), m = v.before, g = readGif(files["bump2.gif"]);
+const heapTex = m.bytes(m.u32(0x4C794), 65536); let b = 0; for (let i = 0; i < 65536; i++) if (heapTex[i] !== g.pix[i]) b++;
+console.log("bump2.gif pixels vs the demo's loaded texture:", b ? b + " differ" : "identical");
+const t = bumpTable(g.pix, g.pal, trig()), mem = m.bytes(m.u32(0x4C82C), 131072); let bad = 0; for (let i = 0; i < 65536; i++) if (t[i] !== mem.readUInt16LE(2 * i)) bad++;
+console.log("displacement table:", bad ? bad + " of 65536 entries differ" : "identical (65536 entries)"); process.exit(bad || b ? 1 : 0);
