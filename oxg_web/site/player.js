@@ -73,7 +73,34 @@
     try { const probe = new Audio(), a = new Audio(probe.canPlayType("audio/ogg; codecs=vorbis") ? "assets/music.ogg" : "assets/music.mp3"); a.preload = "auto"; await new Promise((ok, bad) => { a.oncanplaythrough = ok; a.onerror = bad; setTimeout(ok, 4000); }); audio = a; } catch (e) { audio = null; }
     $("status").textContent = "ready"; ui();
   }
-  function setCrt(on) { $("wrap").classList.toggle("crt", on); $("crt").checked = on; store.set("oxg-crt", on ? "1" : "0"); }
+  // CRT overlay: needs an integer number k of device px per source row (no moire), so the canvas is sized to k*200 device px
+  const SRC_ROWS = 200;
+  let crtOn = false;
+  function layoutCrt() {
+    const w = $("wrap"), c = $("screen"), s = $("scan"), fs = !!document.fullscreenElement, dpr = window.devicePixelRatio || 1;
+    for (const e of [w, c, s]) e.style.cssText = "";
+    w.classList.remove("crt");
+    let k = Math.floor(Math.min(fs ? innerHeight : innerHeight - 40, innerWidth * 3 / 4) * dpr / SRC_ROWS + 1e-6);
+    const css = v => v / dpr + "px";
+    const apply = () => {
+      const H = k * SRC_ROWS, W = Math.round(H * 4 / 3);   // device px
+      w.classList.add("crt");
+      let L = 0, T = 0;
+      if (fs) { L = Math.round((innerWidth * dpr - W) / 2); T = Math.round((innerHeight * dpr - H) / 2); }
+      else { w.style.width = css(W); w.style.height = css(H); }
+      for (const e of [c, s]) { e.style.width = css(W); e.style.height = css(H); e.style.left = css(L); e.style.top = css(T); }
+      s.style.setProperty("--per", css(k));
+    };
+    // windowed: shrink k until picture + bar + info (+ 2 flex gaps) fit the viewport
+    if (crtOn && k >= 2) { apply(); while (!fs && k > 2 && w.offsetHeight + $("bar").offsetHeight + $("info").offsetHeight + 20 > innerHeight) { k--; apply(); } }
+    const ok = k >= 2;
+    $("crt").title = ok ? "CRT scanlines (C)" : "window too small for the CRT effect (needs 2+ device pixels per source row)";
+    $("crt").parentNode.style.opacity = ok ? "" : ".5";
+    if (!(crtOn && ok)) { for (const e of [w, c, s]) e.style.cssText = ""; w.classList.remove("crt"); }
+  }
+  function setCrt(on) { crtOn = on; $("crt").checked = on; store.set("oxg-crt", on ? "1" : "0"); layoutCrt(); }
+  addEventListener("resize", layoutCrt); document.addEventListener("fullscreenchange", layoutCrt);
+  (function watchDpr() { matchMedia("(resolution: " + (window.devicePixelRatio || 1) + "dppx)").addEventListener("change", () => { layoutCrt(); watchDpr(); }, { once: true }); })();
   $("start").addEventListener("click", begin);
   $("pp").addEventListener("click", () => { if (!started) begin(); else setPaused(!paused); ui(); });
   $("seek").addEventListener("input", e => { dragging = true; $("time").textContent = clock(e.target.value / HZ) + " / " + clock(total / HZ); });
