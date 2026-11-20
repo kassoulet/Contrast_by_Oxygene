@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CONTRAST (Oxygene, 1996) - effects, 3D engine, scenes</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+  :root{--bg:#fff;--fg:#1d1d22;--mut:#666;--ac:#c4155a;--code:#f3f3f6;--bd:#d8d8e0}
+  @media (prefers-color-scheme:dark){:root{--bg:#0b0b10;--fg:#d8d8e0;--mut:#9a9aa8;--ac:#ff6a9a;--code:#17171f;--bd:#33333f}}
+  *{box-sizing:border-box}
+  body{margin:0 auto;max-width:62rem;padding:0 16px;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif}
+  #wunav{display:flex;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);font-size:14px}
+  a{color:var(--ac)}
+  h1,h2,h3,h4{line-height:1.25;margin-top:1.8em}
+  img{max-width:100%;height:auto;image-rendering:auto}
+  pre{background:var(--code);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;overflow-x:auto;font-size:13px;line-height:1.4}
+  code{background:var(--code);padding:1px 4px;border-radius:3px;font-size:.92em;overflow-wrap:anywhere}
+  pre code{background:none;padding:0;overflow-wrap:normal}
+  table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%}
+  td,th{border:1px solid var(--bd);padding:4px 8px}
+  blockquote{border-left:3px solid var(--bd);margin-left:0;padding-left:14px;color:var(--mut)}
+  #TOC{font-size:14px}#TOC ul{padding-left:1.2em}
+  #TOC>ul{padding-left:0;list-style:none}
+  details#toc-box{margin:12px 0}
+  </style>
+</head>
+<body>
+<nav id="wunav"><a href="../index.html">&larr; the demo</a> <a href="WRITEUP-asm.html">asm</a> <a href="WRITEUP-effects.html">effects</a> <a href="https://github.com/kassoulet/Contrast_by_Oxygene">README on GitHub</a></nav>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#contrast-oxygene-1996---effects-3d-engine-scenes"
+id="toc-contrast-oxygene-1996---effects-3d-engine-scenes">CONTRAST
+(Oxygene, 1996) - effects, 3D engine, scenes</a>
+<ul>
+<li><a href="#0-what-is-exact-and-what-is-not"
+id="toc-0-what-is-exact-and-what-is-not">0. What is exact and what is
+not</a></li>
+<li><a href="#1-clock-script-and-palette"
+id="toc-1-clock-script-and-palette">1. Clock, script and
+palette</a></li>
+<li><a href="#2-timeline-recorded-run"
+id="toc-2-timeline-recorded-run">2. Timeline (recorded run)</a></li>
+<li><a href="#3-the-2d-scenes" id="toc-3-the-2d-scenes">3. The 2D
+scenes</a>
+<ul>
+<li><a
+href="#31-intro-polar-map-swirl-0x11fb7-0x12141-0x122cd-0x12459-0x1261e"
+id="toc-31-intro-polar-map-swirl-0x11fb7-0x12141-0x122cd-0x12459-0x1261e">3.1
+Intro: polar-map swirl (0x11FB7, 0x12141, 0x122CD, 0x12459,
+0x1261E)</a></li>
+<li><a
+href="#32-water-three-lookups-per-pixel-pair-0x12f58-0x13047-tables-at-0x12abf"
+id="toc-32-water-three-lookups-per-pixel-pair-0x12f58-0x13047-tables-at-0x12abf">3.2
+Water: three lookups per pixel pair (0x12F58, 0x13047, tables at
+0x12ABF)</a></li>
+<li><a href="#33-greetings-additive-orbs-and-dissolves-0x184a0"
+id="toc-33-greetings-additive-orbs-and-dissolves-0x184a0">3.3 Greetings:
+additive orbs and dissolves (0x184A0)</a></li>
+<li><a
+href="#34-particles-and-bobs-0x18ba0-projection-0x197c2-draw-0x19c45"
+id="toc-34-particles-and-bobs-0x18ba0-projection-0x197c2-draw-0x19c45">3.4
+Particles and bobs (0x18BA0, projection 0x197C2, draw 0x19C45)</a></li>
+<li><a
+href="#35-wireframe-with-flowing-trails-0x16644-filter-0x169b0-line-0x145f4"
+id="toc-35-wireframe-with-flowing-trails-0x16644-filter-0x169b0-line-0x145f4">3.5
+Wireframe with flowing trails (0x16644, filter 0x169B0, line
+0x145F4)</a></li>
+<li><a href="#36-end-of-scene-ripple-0x100b5-scenes-3-and-5"
+id="toc-36-end-of-scene-ripple-0x100b5-scenes-3-and-5">3.6 End-of-scene
+ripple (0x100B5, scenes 3 and 5)</a></li>
+<li><a href="#37-the-ending-0x16cf0" id="toc-37-the-ending-0x16cf0">3.7
+The ending (0x16CF0)</a></li>
+</ul></li>
+<li><a href="#4-the-3d-engine" id="toc-4-the-3d-engine">4. The 3D
+engine</a>
+<ul>
+<li><a href="#41-data-the-3dm-files" id="toc-41-data-the-3dm-files">4.1
+Data: the 3DM files</a></li>
+<li><a href="#42-per-frame-renderframe-in-srcscene3js"
+id="toc-42-per-frame-renderframe-in-srcscene3js">4.2 Per frame
+(<code>renderFrame</code> in <code>src/scene3.js</code>)</a></li>
+<li><a href="#43-the-pair-multiply-projection"
+id="toc-43-the-pair-multiply-projection">4.3 The pair-multiply
+projection</a></li>
+<li><a
+href="#44-the-three-polygon-fillers-flat-0x180d0-textured-0x1716f-textured--shaded-0x17855-srcfilljs"
+id="toc-44-the-three-polygon-fillers-flat-0x180d0-textured-0x1716f-textured--shaded-0x17855-srcfilljs">4.4
+The three polygon fillers (flat 0x180D0, textured 0x1716F, textured +
+shaded 0x17855; <code>src/fill.js</code>)</a></li>
+<li><a href="#45-materials-and-scenes"
+id="toc-45-materials-and-scenes">4.5 Materials and scenes</a></li>
+</ul></li>
+<li><a href="#5-bug-compatible-details-the-port-had-to-copy"
+id="toc-5-bug-compatible-details-the-port-had-to-copy">5. Bug-compatible
+details the port had to copy</a></li>
+<li><a href="#6-open-points" id="toc-6-open-points">6. Open
+points</a></li>
+<li><a href="#7-the-art-images-textures-sprites-meshes"
+id="toc-7-the-art-images-textures-sprites-meshes">7. The art: images,
+textures, sprites, meshes</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="contrast-oxygene-1996---effects-3d-engine-scenes">CONTRAST
+(Oxygene, 1996) - effects, 3D engine, scenes</h1>
+<p><em>CONTRAST</em> by <strong>Oxygene</strong> (code OXBAB, 3D
+graphics SPIRAL and MON, music CLAWZ/Impact, sound system MIDAS 0.50a).
+A DOS/4GW (Watcom C/C++32) executable of 405 KB, a 2.6 MB data archive
+<code>CONTRAST.BIN</code> (59 files) and a 12-channel FastTracker 2
+module <code>CONTRAST.XM</code>. The recorded run lasts 560 s (39,243
+ticks).</p>
+<p>Everything below was read in the disassembly
+(<code>oxg_out/code.asm</code>) and in the port
+(<code>oxg_web/src/*.js</code>, one module per routine group; every
+scene is a class with <code>step(sync) -&gt; {frame, pal}</code>, one
+call = one 70 Hz tick). Longer reference material is in
+<code>oxg_out/REVERSE.md</code> and <code>oxg_out/EFFECTS.md</code>; the
+asm tricks are in <code>WRITEUP-asm.md</code>.</p>
+<h2 id="0-what-is-exact-and-what-is-not">0. What is exact and what is
+not</h2>
+<ul>
+<li><strong>Frames and palettes are exact</strong> against a recording
+of the real program run under emulation (Unicorn, flat 32-bit, virtual
+VGA/PIT, MIDAS in "No Sound" mode):
+<code>node oxg_web/test/test_seq.js</code> runs the whole chain and
+reports zero differing ticks, except tick 23,511 where the recording
+itself caught the program half-way through its own screen update
+(<code>oxg_out/EFFECTS.md</code>, section 7). Single routines were also
+checked against memory dumps (<code>test_*.js</code>). I did not re-run
+the tests for this write-up; the figures are those stated in
+<code>oxg_out/EFFECTS.md</code> and <code>oxg_web/README.md</code>.</li>
+<li><strong>Timing is the part that is not a derivation.</strong> Scene
+starts and ends are driven by <em>sync values</em> that the module sets
+(section 1). The web page does not run MIDAS: it feeds the scenes a
+table of sync values recorded from the emulated run
+(<code>site/assets/sync.json</code>), and plays the module rendered with
+libopenmpt, time-warped row by row to the emulated MIDAS timing. In "No
+Sound" mode MIDAS plays about 3.6 % slower than nominal
+(<code>oxg_out/EFFECTS.md</code>); the behaviour on a real sound card
+could not be observed.</li>
+<li><strong>Aspect ratio.</strong> The demo is VGA mode 13h, 320x200,
+256 colours, pixels not square. The web page stretches the 320x200
+picture to 4:3 with CSS (<code>oxg_web/README.md</code>). The 3D engine
+itself corrects for it: the camera matrix's y row is scaled by 512/596
+(section 4.2).</li>
+</ul>
+<h2 id="1-clock-script-and-palette">1. Clock, script and palette</h2>
+<ul>
+<li><strong>Frame counter from the retrace.</strong> At start-up
+(0x102DB) the program waits for three retraces on port 0x3DA, programs
+the PIT (mode 3, count 0), times one retrace and re-programs the timer
+interrupt so that it fires once per frame. The counter
+<code>[0x44E20]</code> is then a frame counter and "wait for the next
+frame" is three instructions (0x102CB). The recorded run gives 70.09
+ticks per second.</li>
+<li><strong>Music as the script.</strong> The main routine (0x10564)
+calls nine scene routines in order. Each one waits for a value of the
+module's <em>sync</em> word (read from MIDAS in the main loop; edges
+<code>1 -&gt; 0</code>, then 3, 4, ... 0xD). The scene code contains no
+timeline of its own beyond tick counts inside a scene. The port
+therefore takes the sync value as an input of
+<code>step(sync)</code>.</li>
+<li><strong>Fade tables instead of arithmetic.</strong>
+<code>0x10F64</code> builds 64 palettes (768 bytes of 8-bit components
+each) from a source and a destination. A fade is
+<code>DAC = table[tick] &gt;&gt; 2</code>. The port
+(<code>src/fade.js</code>) is the whole routine:</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">768</span><span class="op">;</span> i<span class="op">++</span>) {            <span class="co">// src null: from black; dst null: to black</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>src) { P[i] <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> D[i] <span class="op">=</span> dst[i] <span class="op">&lt;&lt;</span> <span class="dv">2</span><span class="op">;</span> }</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span> (<span class="op">!</span>dst) { P[i] <span class="op">=</span> src[i] <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">;</span> D[i] <span class="op">=</span> (<span class="op">-</span>src[i]) <span class="op">&lt;&lt;</span> <span class="dv">2</span><span class="op">;</span> }</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> { P[i] <span class="op">=</span> src[i] <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">;</span> D[i] <span class="op">=</span> (dst[i] <span class="op">-</span> src[i]) <span class="op">&lt;&lt;</span> <span class="dv">2</span><span class="op">;</span> }</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> s <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> s <span class="op">&lt;</span> <span class="dv">64</span><span class="op">;</span> s<span class="op">++</span>) <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">768</span><span class="op">;</span> i<span class="op">++</span>) { out[s<span class="op">*</span><span class="dv">768</span><span class="op">+</span>i] <span class="op">=</span> (P[i] <span class="op">&gt;&gt;</span> <span class="dv">8</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">;</span> P[i] <span class="op">+=</span> D[i]<span class="op">;</span> }</span></code></pre></div>
+<p>DAC colour 0 is forced to black every tick. Palettes stored in the
+archive (<code>textdeb*.bin</code>, <code>bump3..5.bin</code>) are 768
+bytes of 8-bit values; GIFs carry theirs inside.</p>
+<ul>
+<li><strong>Tables built at start-up (0x107AC).</strong> A 4096-entry
+circle: cos and sin scaled by 32768 <em>truncated toward zero</em>
+(Watcom's float-to-int helper, see the asm write-up), and
+<code>trunc(sqrt(i))</code>. <code>src/tables.js</code> reproduces them
+bit-exactly:</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> a <span class="op">=</span> (<span class="dv">2</span> <span class="op">*</span> i) <span class="op">*</span> <span class="fl">3.141592654</span> <span class="op">*</span> <span class="fl">0.000244140625</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cos[i] <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">trunc</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">cos</span>(a) <span class="op">*</span> <span class="dv">32768</span>)<span class="op">;</span>  sin[i] <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">trunc</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">sin</span>(a) <span class="op">*</span> <span class="dv">32768</span>)<span class="op">;</span></span></code></pre></div>
+<h2 id="2-timeline-recorded-run">2. Timeline (recorded run)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>scene (routine)</th>
+<th>what you see</th>
+<th>plays from</th>
+<th>ends</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>intro (0x11720)</td>
+<td>pink swirl tunnel, OXYGENE letters appear one by one</td>
+<td>0 s</td>
+<td>49.9 s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>water (0x127F0)</td>
+<td>bump-mapped water floor with the credit logos</td>
+<td>50.5 s</td>
+<td>97.7 s</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>scenebis.3dm</code> (0x15BD0)</td>
+<td>lit tori, marble floor, four chrome objects; ripple at the end</td>
+<td>102.3 s</td>
+<td>187.2 s</td>
+</tr>
+<tr>
+<td>4</td>
+<td>greetings (0x184A0)</td>
+<td>ten glowing orbs behind the lettering, two dissolves</td>
+<td>193.4 s</td>
+<td>233.7 s</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>cirk4.3dm</code> (0x16130)</td>
+<td>flight through a reflection-mapped metal complex; ripple</td>
+<td>239.7 s</td>
+<td>330.6 s</td>
+</tr>
+<tr>
+<td>6</td>
+<td>particles (0x18BA0)</td>
+<td>point clouds drawn as shaded balls, morphing</td>
+<td>335.5 s</td>
+<td>397.7 s</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>line3.3dm</code> (0x16644)</td>
+<td>wireframe with trails flowing outwards</td>
+<td>402.1 s</td>
+<td>425.6 s</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>poto4.3dm</code> (0x16A7C)</td>
+<td>textured room with a reflecting centrepiece</td>
+<td>427.1 s</td>
+<td>475.0 s</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>meduse2.3dm</code> (0x16CF0)</td>
+<td>articulated jellyfish, three title strips, fade</td>
+<td>475.0 s</td>
+<td>560 s</td>
+</tr>
+</tbody>
+</table>
+<p>Scenes 3, 5, 8 and 9 are the same loop with different constants (file
+names, starting sync, tick of the end ripple), which is why
+<code>src/scene3.js</code> is one parametrised class
+(<code>SCENEBIS</code>, <code>CIRK4</code>, <code>POTO4</code>,
+<code>MEDUSE</code> configs). Setups that take long (the dissolve tables
+of the greetings scene, the sprite groups of the particle scene) just
+let ticks pass with the old picture on screen; the port reproduces those
+gaps (11 ticks in the greetings scene, about 340 in the particle
+scene).</p>
+<h2 id="3-the-2d-scenes">3. The 2D scenes</h2>
+<h3
+id="31-intro-polar-map-swirl-0x11fb7-0x12141-0x122cd-0x12459-0x1261e">3.1
+Intro: polar-map swirl (0x11FB7, 0x12141, 0x122CD, 0x12459,
+0x1261E)</h3>
+<p>A <strong>polar map</strong> of 65,536 <code>u16</code> entries is
+computed once (0x11864) by sweeping radius r in 0..179 and angle a in
+0..4095; each hit cell stores a texture offset whose high byte depends
+on the radius (<code>4000 / d</code>) and whose low byte follows the
+angle. Later radii overwrite earlier ones. From
+<code>src/tables.js</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> x <span class="op">=</span> (((t<span class="op">.</span><span class="at">cos</span>[a] <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> r) <span class="op">&gt;&gt;</span> <span class="dv">16</span>) <span class="op">+</span> <span class="bn">0x80</span>)<span class="op">,</span> y <span class="op">=</span> (((t<span class="op">.</span><span class="at">sin</span>[a] <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> r) <span class="op">&gt;&gt;</span> <span class="dv">16</span>) <span class="op">+</span> <span class="bn">0x80</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> q <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">trunc</span>(<span class="dv">4000</span> <span class="op">/</span> d)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>map[(y <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">+</span> x] <span class="op">=</span> ((q <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">+</span> ((((q <span class="op">&gt;&gt;</span> <span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span>) <span class="op">+</span> (a <span class="op">&gt;&gt;</span> <span class="dv">4</span>)) <span class="op">&amp;</span> <span class="bn">0xFF</span>)) <span class="op">&amp;</span> <span class="bn">0xFFFF</span><span class="op">;</span></span></code></pre></div>
+<p>Per frame the screen is not computed pixel by pixel: for each of 100
+rows the program starts at a rotated, scaled position (u, v kept as
+8.16-style fractions in one register pair) and walks a line through the
+map. Each step reads <code>map[(u_int, v_int)]</code>, adds an animation
+offset and reads the texture. Two screen rows share one computation
+(each dword is stored twice, one line up) and only 256 of the 320
+columns are computed (64 words per row, four pixels each). From
+<code>src/swirl.js</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> pos <span class="op">=</span> ((ecx <span class="op">&gt;&gt;&gt;</span> <span class="dv">8</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span>) <span class="op">&lt;&lt;</span> <span class="dv">8</span> <span class="op">|</span> al<span class="op">;</span>  <span class="kw">let</span> t <span class="op">=</span> map[pos]<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (variant <span class="op">&gt;=</span> <span class="dv">2</span>) t <span class="op">=</span> (t <span class="op">+</span> pos) <span class="op">&amp;</span> <span class="bn">0xFFFF</span><span class="op">;</span>                 <span class="co">// variants 2 and 3 add the position to the map value</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> (t <span class="op">+</span> off) <span class="op">&amp;</span> <span class="bn">0xFFFF</span><span class="op">;</span>                                   <span class="co">// animation offset (rotation / zoom of the texture)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (variant <span class="op">===</span> <span class="dv">3</span>) { count <span class="op">=</span> (count <span class="op">+</span> <span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">;</span> t <span class="op">=</span> (t <span class="op">&amp;</span> <span class="bn">0xFF</span>) <span class="op">|</span> ((((t <span class="op">&gt;&gt;</span> <span class="dv">8</span>) <span class="op">+</span> count) <span class="op">&amp;</span> <span class="bn">0xFF</span>) <span class="op">&lt;&lt;</span> <span class="dv">8</span>)<span class="op">;</span> }   <span class="co">// per-pixel shear</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>edx <span class="op">=</span> (edx <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">|</span> tex[t]<span class="op">;</span>                                <span class="co">// four pixels packed in a dword, stored twice</span></span></code></pre></div>
+<p>The state table at 0x3009A gives per state a rotation speed and two
+drifts; the state advances when the music's sync goes
+<code>1 -&gt; 0</code> (tick counter reset). The routine used per state
+is <code>[V0,V3,V1,V3,V0,V2,V3,V1]</code>, then V0 (<code>variant</code>
+array in <code>src/intro.js</code>). The lettering is a 320x86 GIF with
+colour 0 as background; each state reveals more of it with the mask
+trick <code>buf = (buf &amp; mask) | picture</code> (mask = 0xFF where
+the picture is 0), the visible width/height per state being the
+<code>REVEAL</code> table (<code>src/intro.js</code>). The fade tables
+are built from the seven <code>textdeb*</code> palettes.
+<strong>Exact</strong> (2,700 ticks compared at the time of the first
+port, whole chain later).</p>
+<h3
+id="32-water-three-lookups-per-pixel-pair-0x12f58-0x13047-tables-at-0x12abf">3.2
+Water: three lookups per pixel pair (0x12F58, 0x13047, tables at
+0x12ABF)</h3>
+<p>A perspective floor. For every one of 200 rows the program computes a
+depth <code>d</code> from a row counter, divides the rotation vector by
+<code>d</code> twice with <code>idiv</code> (<code>q1 = A/d</code>,
+<code>q2 = q1/d</code>, same for B) and walks a 256x256 <strong>height
+texture</strong> (<code>bump2.gif</code>) along that line. Per pair of
+pixels (128 pairs per row):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> pos <span class="op">=</span> ((ecx <span class="op">&gt;&gt;&gt;</span> <span class="dv">8</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span>) <span class="op">&lt;&lt;</span> <span class="dv">8</span> <span class="op">|</span> al<span class="op">,</span> dx <span class="op">=</span> (dxb <span class="op">+</span> disp[pos]) <span class="op">&amp;</span> <span class="bn">0xFFFF</span><span class="op">,</span> h <span class="op">=</span> height[pos]<span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> e1 <span class="op">=</span> env[dx]<span class="op">,</span> e2 <span class="op">=</span> env[(dx <span class="op">+</span> <span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFFFF</span>]<span class="op">;</span>                  <span class="co">// 256x256 environment image (bumpecla.gif)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>out[edi]   <span class="op">=</span> lut[(e1 <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">|</span> h]<span class="op">;</span>  out[edi<span class="op">+</span><span class="dv">1</span>] <span class="op">=</span> lut[(e2 <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">|</span> h]<span class="op">;</span>  <span class="co">// 64 KB colour table (cpalcred.bin)</span></span></code></pre></div>
+<ul>
+<li><code>disp</code> is the <strong>bump map</strong>, precomputed
+(0x12ABF) as two signed offsets per texel: the luminance (r^2+g^2+b^2)
+difference between the texel and the one four rows below, and the one
+four to the right, divided by 0x300, times a sine of the row / column
+phase, plus 0xB0 (<code>bumpTable</code> in
+<code>src/bump.js</code>).</li>
+<li>Rotation, zoom and the look-up offset (<code>dxb</code>) come from
+sums of sines of five free-running counters, which is what makes the
+surface ripple.</li>
+<li><code>cpalcred.bin</code> is 16 KB in the file but indexed up to 64
+KB; the original reads past it when the environment image does, and the
+port keeps that (<code>lut</code> is read as a 64 KB array, see the
+comment in <code>bump.js</code>).</li>
+<li>The credit logos (160x32, colour 0 transparent) are copied over on
+sync, and the palette cross-fades between five palettes
+(<code>bump2.gif</code>, <code>bump3..5.bin</code>, black).</li>
+</ul>
+<p>The scene continues the swirl's angle from the intro
+(<code>INTRO_END_ANGLE</code> in <code>src/sequence.js</code>). Exact
+against the recording.</p>
+<h3 id="33-greetings-additive-orbs-and-dissolves-0x184a0">3.3 Greetings:
+additive orbs and dissolves (0x184A0)</h3>
+<ul>
+<li><strong>Orbs.</strong> A 96x96 sprite is computed at start-up with
+float32 maths (0x1859D): <code>(1 - 3q^2) * 50</code> inside a core of
+radius 15.67, <code>(1 - q)^2 * 75</code> outside, 0 beyond 47, with
+<code>q = d / 47</code> (<code>makeSprite</code> in
+<code>src/greets.js</code>). It is <strong>added</strong> to the screen
+at ten positions, each a sum of two sines
+(<code>(sin a + sin b) * 0x34 &gt;&gt; 16</code> for y, cosines times
+0x70 for x), as plain dword adds, four pixels at once with byte carries
+running into neighbours. There is no clamping; the palette is built so
+overflow is harmless:</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dv<span class="op">.</span><span class="fu">setUint32</span>(p<span class="op">,</span> (dv<span class="op">.</span><span class="fu">getUint32</span>(p<span class="op">,</span> <span class="kw">true</span>) <span class="op">+</span> (spr[s] <span class="op">|</span> spr[s<span class="op">+</span><span class="dv">1</span>] <span class="op">&lt;&lt;</span> <span class="dv">8</span> <span class="op">|</span> spr[s<span class="op">+</span><span class="dv">2</span>] <span class="op">&lt;&lt;</span> <span class="dv">16</span> <span class="op">|</span> spr[s<span class="op">+</span><span class="dv">3</span>] <span class="op">&lt;&lt;</span> <span class="dv">24</span>)) <span class="op">&gt;&gt;&gt;</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>Lettering.</strong> The 128x200 "greets" picture is merged
+with <code>(screen &amp; mask) | picture</code> (here the port writes
+non-zero picture pixels over the screen).</li>
+<li><strong>Dissolves.</strong> <code>fond7.gif</code> and
+<code>fond3.gif</code> are used as <strong>dissolve orders</strong>: for
+each value v = 0..255 the offsets of all pixels of that value are listed
+(<code>groups(map)</code>); at tick v the pixels of group v are copied
+from <code>final.gif</code> (first dissolve,
+<code>reveal(list, false)</code>) or cleared (second,
+<code>erase</code>). Any hand-drawn greyscale shape becomes a 256-step
+transition for the cost of one table walk per tick.</li>
+</ul>
+<p>The ten blobs' four phase accumulators and steps are in the data
+section at 0x3028C (<code>BLOBS</code> in the port). Exact against the
+recording.</p>
+<h3
+id="34-particles-and-bobs-0x18ba0-projection-0x197c2-draw-0x19c45">3.4
+Particles and bobs (0x18BA0, projection 0x197C2, draw 0x19C45)</h3>
+<ul>
+<li><strong>Point clouds</strong> (<code>debut</code>,
+<code>debut2</code>: 773 points; <code>fleur</code>,
+<code>fleur2</code>, <code>fleur3</code>: 200; <code>final</code>: 586;
+each point <code>x y z w</code>, w picks the sprite) are
+<strong>morphed</strong> by linear interpolation in 24.8 fixed point;
+0x194A0 precomputes the frames (64 for debut -&gt; debut2, 128 + 128 for
+the flowers). From <code>morph</code> in <code>src/bobs.js</code>:</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cur <span class="op">=</span> a <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">;</span>  step <span class="op">=</span> <span class="fu">idiv</span>((b <span class="op">-</span> a) <span class="op">&lt;&lt;</span> <span class="dv">8</span><span class="op">,</span> frames)<span class="op">;</span>   <span class="co">// per point and coordinate</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> each frame<span class="op">:</span> out <span class="op">=</span> cur <span class="op">&gt;&gt;</span> <span class="dv">8</span><span class="op">;</span>  cur <span class="op">+=</span> step<span class="op">;</span>       <span class="co">// the last frame stops one step short of B</span></span></code></pre></div>
+<ul>
+<li><strong>Rotation</strong> by three angles with a 16-bit matrix
+(sine/cosine tables of scale 512 in <code>data/trig16.bin</code>,
+products shifted by 9) and the same pair-multiply trick as the 3D engine
+(section 4.3); projection with a 16-bit <code>idiv</code> by
+<code>2*z - dist</code>, centre (0xC0, 0x84).</li>
+<li><strong>Z-buffer in the colour word.</strong> The screen is an array
+of 16-bit words <code>depth &lt;&lt; 8 | colour</code> (384x340 words,
+so sprites hang over the edges without clipping); the sprite word plus
+the depth is compared with the stored word as a <em>signed</em> word and
+stored if larger. The sprites (<code>bobz.bin</code>) are runs
+<code>count, x-offset, words...</code>.</li>
+<li><strong>Background and dissolves.</strong> <code>boite21.gif</code>
+is the cleared state (words <code>0x8100 | colour</code>); each frame
+the visible words are copied out and the buffer is reset.
+<code>rip3.gif</code> drives two dissolves that overwrite buffer words
+with background words (stage 1) or zeros (stage 2). Stage 3 spins the
+<code>final</code> cloud and fades out.</li>
+</ul>
+<p>The port notes that nothing clears the screen at the scene's start,
+so the last picture of the previous scene stays until the first display
+(<code>new Bobs(files, scene.shown)</code>). Exact against the
+recording.</p>
+<h3
+id="35-wireframe-with-flowing-trails-0x16644-filter-0x169b0-line-0x145f4">3.5
+Wireframe with flowing trails (0x16644, filter 0x169B0, line
+0x145F4)</h3>
+<p>The 3D engine draws only edges: for each sorted face the flags (4 =
+v1-v2, 2 = v2-v3, 1 = v3-v1) choose which of the three edges are drawn
+in colour 0x7F with a <strong>thick line</strong> (a plus of five pixels
+per step, from the right end to the left, <code>line</code> in
+<code>src/wire.js</code>). Then a <strong>feedback filter</strong>
+produces the next picture:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 160 blocks (16 x 10) of 20x20 pixels, each read at an offset towards the centre: -(row*320) - column</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> w <span class="op">=</span> ((src[s] <span class="op">|</span> src[s<span class="op">+</span><span class="dv">1</span>] <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">+</span> (src[s <span class="op">-</span> <span class="bn">0x13F</span>] <span class="op">|</span> src[s <span class="op">-</span> <span class="bn">0x13E</span>] <span class="op">&lt;&lt;</span> <span class="dv">8</span>)) <span class="op">&amp;</span> <span class="bn">0xFFFF</span><span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> v <span class="op">=</span> lut[(w <span class="op">&gt;&gt;</span> <span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0x7F7F</span>]<span class="op">;</span>       <span class="co">// average of two pixels pair-wise, then lowered by 5 through a 64K-word table</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>dst[d] <span class="op">=</span> v <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">;</span>  dst[d <span class="op">+</span> <span class="dv">1</span>] <span class="op">=</span> v <span class="op">&gt;&gt;</span> <span class="dv">8</span><span class="op">;</span></span></code></pre></div>
+<p><code>lut[hi*256+lo] = (max(hi-5,0) &lt;&lt; 8) | max(lo-5,0)</code>.
+The palette is the gradient of <code>bump9.gif</code>; the lines decay
+over about 25 frames while slowly flowing outwards. The buffers are
+0x14000 bytes with a margin so the offsets stay in range. Exact against
+the recording.</p>
+<h3 id="36-end-of-scene-ripple-0x100b5-scenes-3-and-5">3.6 End-of-scene
+ripple (0x100B5, scenes 3 and 5)</h3>
+<p>For the last 210 (scene 3, from tick 0x166C) or 350 (scene 5, from
+0x1784) frames the 3D picture is drawn into a second buffer and copied
+to the screen in <strong>2x2 blocks</strong> displaced by a sine of the
+row and of the column, scaled by the amplitude and by triangular weights
+(zero at the edges); the amplitude grows by one per frame up to 63. From
+<code>ripple</code> in <code>src/scene3.js</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> w  <span class="op">=</span> <span class="fu">s16</span>(tabA[<span class="dv">2</span><span class="op">*</span>r] <span class="op">*</span> amp)<span class="op">,</span> s2 <span class="op">=</span> <span class="fu">s16</span>(sine[(ph <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>r) <span class="op">&amp;</span> <span class="bn">0xFF</span>] <span class="op">*</span> amp)<span class="op">;</span>     <span class="co">// tabA: 100 - |i - 100|</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> dx1 <span class="op">=</span> (sine[ph2 <span class="op">+</span> c] <span class="op">*</span> w) <span class="op">&gt;&gt;</span> <span class="dv">16</span><span class="op">,</span>  dx2 <span class="op">=</span> (tabB[<span class="dv">2</span><span class="op">*</span>c] <span class="op">*</span> s2) <span class="op">&gt;&gt;</span> <span class="dv">16</span><span class="op">;</span>          <span class="co">// tabB: 160 - |i - 160|</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> <span class="im">from</span> <span class="op">=</span> pos <span class="op">+</span> <span class="fu">s16</span>(dx1 <span class="op">*</span> <span class="dv">320</span> <span class="op">+</span> dx2)<span class="op">;</span>                                        <span class="co">// copy 2x2 pixels from here</span></span></code></pre></div>
+<p>Phases advance by 1 (rows) and 2 (columns) per tick. Two 16-bit
+multiplies per 2x2 block. Exact.</p>
+<h3 id="37-the-ending-0x16cf0">3.7 The ending (0x16CF0)</h3>
+<p>After sync 9 the jellyfish stops, the screen is cleared and three
+320x32 strips (<code>contr</code>, <code>oxyge</code>,
+<code>tank</code>) are copied at row 84 (offset 0x6900) on syncs 9, 10,
+11; on sync 12 the palette fades to black through a table built from the
+strips' palette; sync 13 ends the program, MIDAS is shut down and
+<code>contrast.txt</code> is printed on the text screen
+(<code>src/meduse.js</code>).</p>
+<h2 id="4-the-3d-engine">4. The 3D engine</h2>
+<p>One engine drives scenes 3, 5, 7, 8 and 9: a
+<strong>painter's-algorithm polygon engine in integer
+arithmetic</strong>, no floating point except in the loader (vertex
+normals). Matrices are 16.15 fixed point, coordinates int32. The port is
+a line-by-line model (<code>camera.js</code>, <code>objmat.js</code>,
+<code>hier.js</code>, <code>prepare.js</code>, <code>faces.js</code>,
+<code>fill.js</code>, <code>scene3d.js</code>), each routine compared
+with the real one on memory dumps (loader 285,478 values; camera; object
+matrices; hierarchy; preparation; collection; sort; 2,492 + 879 logged
+polygon fills, <code>oxg_out/EFFECTS.md</code> section 7).</p>
+<h3 id="41-data-the-3dm-files">4.1 Data: the 3DM files</h3>
+<p>Exported from 3D Studio by the group. Layout
+(<code>oxg_out/REVERSE.md</code>, checked by
+<code>oxg_tools/parse_3dm.py</code>, which accounts for every byte of
+the five files): header, objects (vertices <code>i16 x3</code>, faces
+<code>i16 x4</code>, a per-vertex <code>(u, v)</code> mapping and two
+animation arrays), materials (name, texture file, flags, colour) and a
+<strong>camera track</strong> of 7 <code>i16</code> per frame (position,
+target, roll). Each object has a position key and an orientation key
+(quaternion, stored x64) per frame, clamped to the array length (one key
+= static). In memory a vertex is 46 bytes (<code>x, z, y, x*z</code>,
+screen x/y, depth, normal, <code>nx*ny</code>, shade level) and a face
+24 bytes.</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>objects</th>
+<th>vertices</th>
+<th>faces</th>
+<th>track frames</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scenebis</code></td>
+<td>11</td>
+<td>2,631</td>
+<td>3,810</td>
+<td>5,776</td>
+<td>floor, 6 tori, 4 chrome pieces; no hierarchy</td>
+</tr>
+<tr>
+<td><code>cirk4</code></td>
+<td>36</td>
+<td>4,030</td>
+<td>4,568</td>
+<td>6,201</td>
+<td>static "city", animated pieces; reflection pictures baked into the
+mapping</td>
+</tr>
+<tr>
+<td><code>line3</code></td>
+<td>4</td>
+<td>887</td>
+<td>1,766</td>
+<td>1,625</td>
+<td>wireframe; the face word holds edge flags</td>
+</tr>
+<tr>
+<td><code>poto4</code></td>
+<td>8</td>
+<td>1,165</td>
+<td>1,934</td>
+<td>3,361</td>
+<td>room, <code>ENVCENTRE</code> reflection-mapped, one key per
+tick</td>
+</tr>
+<tr>
+<td><code>meduse2</code></td>
+<td>24</td>
+<td>1,134</td>
+<td>1,240</td>
+<td>2,481</td>
+<td>the only hierarchy: dome with four chains of four tentacle
+segments</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-per-frame-renderframe-in-srcscene3js">4.2 Per frame
+(<code>renderFrame</code> in <code>src/scene3.js</code>)</h3>
+<ol type="1">
+<li><strong>Camera</strong> (0x147D0, <code>camera.js</code>): look-at
+matrix from the track entry. The direction is normalised with an integer
+square root, the roll comes from the 4096-entry tables, the translation
+is multiplied in, and the <strong>y row is scaled by 512/596</strong>
+(<code>M[i] = idiv(M[i] &lt;&lt; 9, 0x254)</code>): the 4:3 correction
+for 320x200 pixels. The light is not a file value: every frame it is the
+sum of the camera's position and target.</li>
+<li><strong>Object matrix</strong> (0x14AA0, <code>objmat.js</code>):
+the quaternion key becomes a rotation (<code>1 - 2(b^2+d^2)</code> and
+the other eight terms, each product <code>&gt;&gt; 15</code>); the
+position key is the fourth column.</li>
+<li><strong>Hierarchy</strong> (0x154D0, <code>hier.js</code>): objects
+are linked child/sibling by the loader;
+<code>world = parent . local</code>,
+<code>camw = camera . world</code>.</li>
+<li><strong>Prepare</strong> (0x14DE0, <code>prepare.js</code>):
+bounding sphere vs 320x200 view (0x15690); every vertex is transformed
+and projected:</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> X <span class="op">=</span> (((<span class="fu">imul</span>(M[<span class="dv">0</span>]<span class="op">+</span>z<span class="op">,</span> M[<span class="dv">1</span>]<span class="op">+</span>x) <span class="op">-</span> xz <span class="op">-</span> m00m01 <span class="op">+</span> <span class="fu">imul</span>(M[<span class="dv">2</span>]<span class="op">,</span> y)) <span class="op">|</span> <span class="dv">0</span>) <span class="op">&gt;&gt;</span> <span class="dv">7</span>) <span class="op">+</span> (M[<span class="dv">3</span>] <span class="op">&lt;&lt;</span> <span class="dv">8</span>)<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>v<span class="op">.</span><span class="fu">setInt32</span>(q <span class="op">+</span> <span class="bn">0x18</span><span class="op">,</span> Z<span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span>               <span class="co">// stored depth is the raw one ...</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (Z <span class="op">&lt;</span> <span class="bn">0x40</span>) Z <span class="op">=</span> <span class="bn">0x40</span><span class="op">;</span>                      <span class="co">// ... only the divisor is clamped</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sx <span class="op">=</span> <span class="fu">idiv</span>(X<span class="op">,</span> Z) <span class="op">+</span> <span class="bn">0xA0</span><span class="op">;</span>   sy <span class="op">=</span> <span class="fu">idiv</span>(Y<span class="op">,</span> <span class="op">-</span>Z) <span class="op">+</span> <span class="bn">0x64</span><span class="op">;</span></span></code></pre></div>
+<p>Materials with flag 0x80 get reflection-map coordinates
+<code>u, v = ((n . view) &gt;&gt; 16) + 0x7F</code> from the
+camera-space normal; materials with <code>flags &amp; 3 == 2</code> get
+a light level <code>(n . l) &gt;&gt; 11</code> clamped to -31..31
+(<code>l</code> = direction from the light to the object's centroid, in
+the object's own axes). 5. <strong>Collect</strong> (0x13C40,
+<code>faces.js</code>): reject by screen bounding box, reject
+<strong>back faces by the sign of the screen-space cross
+product</strong>, reject faces entirely behind the camera; the sort key
+is <code>-(z1+z2+z3)</code>, <code>-max z</code> or <code>-min z</code>
+depending on a mode (scenes 3 and 8 use the maximum, scene 5 the sum).
+6. <strong>Sort</strong> (0x13210): a two-pass radix sort of 10-byte
+nodes on the 16-bit key, far to near. The port replaces it with a stable
+sort on the 16-bit key and matches the original's output. 7.
+<strong>Draw</strong> (0x14164, <code>drawFaces</code>): flat, textured,
+or textured + shaded depending on the material.</p>
+<h3 id="43-the-pair-multiply-projection">4.3 The pair-multiply
+projection</h3>
+<p><code>(m0 + b)(m1 + a) - m0*m1 - a*b = m0*a + m1*b</code> (Winograd's
+inner product): with <code>m0*m1</code> per object per frame and
+<code>x*z</code> cached in the vertex, a three-term dot product costs
+two <code>imul</code>. The vertex record carries <code>x*z</code> at
++0xC and <code>nx*ny</code> at +0x28 for exactly this. Asm in
+<code>WRITEUP-asm.md</code>.</p>
+<h3
+id="44-the-three-polygon-fillers-flat-0x180d0-textured-0x1716f-textured--shaded-0x17855-srcfilljs">4.4
+The three polygon fillers (flat 0x180D0, textured 0x1716F, textured +
+shaded 0x17855; <code>src/fill.js</code>)</h3>
+<p>One algorithm with 0, 2 or 3 interpolated attributes:</p>
+<ol type="1">
+<li>rotate the vertices so the first has the smallest y;</li>
+<li>per edge, slopes in 16.16
+(<code>(delta &lt;&lt; 16) / height</code>; shade uses &lt;&lt; 8) for x
+and each attribute;</li>
+<li>fill an <strong>edge table</strong> line by line (x of the long
+edge, x of the short edge, attributes of the short edge), clipping y
+while building it;</li>
+<li>per span, the gradients <code>du/dx, dv/dx, dshade/dx</code> are
+computed <strong>once per triangle</strong> from the first scanline
+(<code>step[k] = idiv(sEnd[k] - lEnd[k], w)</code>) and reused for every
+pixel of every line: affine mapping, no per-pixel or per-line
+division.</li>
+</ol>
+<p>The span loop of the port mirrors the asm, quirk included:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> ecx <span class="op">=</span> (((cu <span class="op">&lt;&lt;</span> <span class="dv">16</span>) <span class="op">|</span> (cu <span class="op">&gt;&gt;&gt;</span> <span class="dv">16</span>)) <span class="op">&amp;</span> <span class="bn">0xFFFF0000</span>) <span class="op">|</span> ((w <span class="op">-</span> <span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFFFF</span>)<span class="op">;</span>   <span class="co">// rol ecx,16: fraction high, count-1 low</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>sum <span class="op">=</span> ecx <span class="op">+</span> immU<span class="op">;</span>  cf <span class="op">=</span> sum <span class="op">&gt;</span> <span class="bn">0xFFFFFFFF</span> <span class="op">?</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span>  ecx <span class="op">=</span> sum <span class="op">&gt;&gt;&gt;</span> <span class="dv">0</span><span class="op">;</span>  bl <span class="op">=</span> (bl <span class="op">+</span> uI <span class="op">+</span> cf) <span class="op">&amp;</span> <span class="bn">0xFF</span><span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">...</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ((ecx <span class="op">&gt;&gt;&gt;</span> <span class="dv">8</span>) <span class="op">&amp;</span> <span class="bn">0x80</span>) <span class="cf">break</span><span class="op">;</span>                                                <span class="co">// or ch,ch ; jns</span></span></code></pre></div>
+<p>The immediate's low word is 0xFFFF, so the pixel counter in
+<code>cx</code> is decremented by the same <code>add</code> that
+advances u; the side effect (a carry into the high half on every pixel
+except the last) makes the fractional u step one unit larger on all
+pixels but the last. The port copies it.</p>
+<p><strong>Shading.</strong> The <code>.cpl</code> file (64 rows x 256
+columns, built offline against the picture's palette) maps
+<code>(level, texel)</code> to a palette index:
+<code>px = cpl[(level &lt;&lt; 8) | texel]</code>. The level is the
+vertex shade + 0x20, interpolated in a 16-bit field; when it wraps past
+the table the original reads whatever follows the table in memory (a
+4-byte heap header and the fade table), and the port reproduces that
+layout (<code>this.cpl</code> in <code>src/scene3.js</code>: table,
+bytes <code>0D 10 18 0A</code>, fade table).</p>
+<h3 id="45-materials-and-scenes">4.5 Materials and scenes</h3>
+<p>Material flags (byte +0x22): <code>flags &amp; 3 == 2</code> lit
+textured (shaded filler), <code>3</code> textured and unlit (the file's
+mapping is used; in <code>cirk4</code> the mapping of the reflection
+pictures was baked by the exporter), <code>1</code> flat colour (the
+palette entry nearest to the file's RGB, a squared-distance search at
+load, 0x10E40), bit 7 = reflection map computed every frame. Scene 3
+uses lit floor and tori plus reflection-mapped chrome; scene 5 never
+uses the shade table (<code>ref01.cpl</code> is loaded but unused);
+scene 8 mixes lit panels and a reflection-mapped centrepiece; scene 9's
+dome is reflection-mapped and the tentacles use the hierarchy. The
+unused fields (the 3DM <code>tag</code>, the material's extra colour
+bytes) are listed as open points in <code>REVERSE.md</code>.</p>
+<h2 id="5-bug-compatible-details-the-port-had-to-copy">5. Bug-compatible
+details the port had to copy</h2>
+<ul>
+<li>the stored vertex depth is the unclamped one (the clamp to 0x40 is
+only for the divide), and the sort uses it;</li>
+<li>the extra fractional unit per pixel in the span loops;</li>
+<li>a shade index beyond the 64 rows reads the following heap
+bytes;</li>
+<li>the vertex-normal sums are done in float32 pieces and normalised
+with an extended-precision reciprocal: <code>src/x87.js</code> models
+the x87's extended precision for this;</li>
+<li><code>cpalcred.bin</code> indexed past its 16 KB (water);</li>
+<li>the 16-bit <code>shr</code> / <code>and 0x7F7F</code> of the trail
+filter;</li>
+<li>a scene that never clears the screen before its first display.</li>
+</ul>
+<h2 id="6-open-points">6. Open points</h2>
+<ul>
+<li>The behaviour with a real sound card (MIDAS timing) is not observed;
+the port follows the emulated "No Sound" run, and the music/sync
+alignment in the browser is a recorded table, not a derivation.</li>
+<li>The meaning of the 3DM <code>tag</code> field and of
+<code>cpalcred.bin</code> / <code>bobz.bin</code> details beyond what
+the scenes exercise is not documented in the notes.</li>
+</ul>
+<h2 id="7-the-art-images-textures-sprites-meshes">7. The art: images,
+textures, sprites, meshes</h2>
+<p>All art lives in <code>oxg_cont/CONTRAST.BIN</code>; no art is
+embedded in the EXE (the EXE only holds the file-name strings,
+<code>oxg_out/REVERSE.md</code>). The archive is a directory of 24-byte
+records (16-byte NUL-padded name, u32 offset, u32 size) in the first
+0xC00 bytes, 59 files, contiguous data after it.
+<code>oxg_tools/extract_bin.py</code> extracts them to
+<code>oxg_out/data/</code> (I re-read the directory and the GIF headers
+of the extracted files with a short script; offsets and sizes below come
+from that). The port reads the same archive in the browser
+(<code>site/assets/CONTRAST.BIN</code>, <code>src/archive.js</code>) and
+decodes GIFs with <code>src/gif.js</code>.</p>
+<p><strong>GIFs</strong> (32 files, standard GIF; each has a 256-entry
+global palette, so every picture is a 256-colour indexed image; the
+palette is 8 bits per channel and the demo writes
+<code>value &gt;&gt; 2</code> to the DAC). Offset in CONTRAST.BIN, size
+in bytes, dimensions:</p>
+<table>
+<thead>
+<tr>
+<th>use</th>
+<th>file (offset, size, WxH)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intro</td>
+<td><code>oxygene.gif</code> (0xefe, 3,856, 320x86; lettering, colour 0
+= background), <code>textdeb5.gif</code> (0x1e0e, 37,224, 256x256; swirl
+texture)</td>
+</tr>
+<tr>
+<td>water</td>
+<td><code>bump2.gif</code> (0xe3ea, 51,353, 256x256; height),
+<code>bumpecla.gif</code> (0xc176, 8,820, 256x256; environment), logos
+<code>oxbab</code> (0x1b583), <code>spiral</code> (0x1bbf8),
+<code>mon</code> (0x1c20d), <code>clawz</code> (0x1c7e8), each 160x32,
+~1.5 KB</td>
+</tr>
+<tr>
+<td>scene 3</td>
+<td><code>scene2.gif</code> (0xae2b7, 49,506, 256x256 floor),
+<code>scene3.gif</code> (0x24e17, 47,768, 256x256 tori),
+<code>sc14b.gif</code> (0xba419, 16,098, 256x256 chrome reflection
+map)</td>
+</tr>
+<tr>
+<td>greetings</td>
+<td><code>greets.gif</code> (0xbe2fb, 5,428, 128x200),
+<code>final.gif</code> (0xbf82f, 31,031, 320x200), dissolve orders
+<code>fond7.gif</code> (0xd4f43, 47,935) and <code>fond3.gif</code>
+(0xc7166, 56,797), both 320x200</td>
+</tr>
+<tr>
+<td>scene 5</td>
+<td><code>ref01/02/03/05.gif</code> (0xe4a82, 0xea4ee, 0xec513, 0xf18a7;
+256x256, 23,148 / 8,229 / 21,396 / 25,834 bytes)</td>
+</tr>
+<tr>
+<td>particles</td>
+<td><code>boite21.gif</code> (0x15fb2f, 21,270, 320x200 background),
+<code>rip3.gif</code> (0x164e45, 55,446, 320x200 dissolve order)</td>
+</tr>
+<tr>
+<td>wireframe</td>
+<td><code>bump9.gif</code> (0x17bc47, 34,142, 320x200; used for its
+palette gradient)</td>
+</tr>
+<tr>
+<td>scene 8</td>
+<td><code>centre.gif</code> (0x1987f9), <code>centref.gif</code>
+(0x1a0651), <code>fond.gif</code> (0x1a562e), <code>decor.gif</code>
+(0x1a801d), <code>torti.gif</code> (0x1aa9c1), all 256x256</td>
+</tr>
+<tr>
+<td>scene 9</td>
+<td><code>meduse.gif</code> (0x26954a), <code>reflec.gif</code>
+(0x26f3e5), 256x256; strips <code>oxyge.gif</code> (0x278751),
+<code>tank.gif</code> (0x278e36), <code>contr.gif</code> (0x279504),
+each 320x32</td>
+</tr>
+</tbody>
+</table>
+<p>Whether every picture uses all 256 palette entries was not checked;
+what is verified is the 256-entry palette of each file. Textures are
+256x256 so that <code>(v, u)</code> are the two address bytes
+(<code>bh:bl</code>) in the span loop. Several images are not pictures
+to look at: <code>fond7</code>, <code>fond3</code>, <code>rip3</code>
+are <strong>dissolve orders</strong> (section 3.3/3.4),
+<code>bump2</code> is a height field,
+<code>bumpecla</code>/<code>ref*</code>/<code>reflec</code>/<code>sc14b</code>/<code>centref</code>
+are environment/reflection maps.</p>
+<p><strong>Raw palettes</strong> (<code>.bin</code>, 768 bytes = 256 x
+RGB, 8 bits, written <code>&gt;&gt; 2</code>): <code>textdeb.bin</code>
+0xb876, <code>textdeb2</code> 0xaf76, <code>textdeb3</code> 0xb276,
+<code>textdeb4</code> 0xb576, <code>textdeb6</code> 0xbb76,
+<code>textdeb7</code> 0xbe76 (intro fades), <code>bump3/4/5.bin</code>
+0x1ac83 / 0x1af83 / 0x1b283 (water).</p>
+<p><strong>Lookup tables</strong> (16,384 bytes each):
+<code>scene2.cpl</code> 0x20e17, <code>ref01.cpl</code> 0xe0a82,
+<code>centre.cpl</code> 0x19c651, <code>meduse.cpl</code> 0x26554a are
+64 x 256 shade tables (<code>cpl[level][colour]</code>, section 4.4);
+<code>cpalcred.bin</code> (0x1ce17) is the water colour table, indexed
+as <code>(env &lt;&lt; 8) | h</code>; <code>bobz.bin</code> (0x1726db)
+holds the eight 2 KB ball sprites as runs
+<code>count, x-offset, words...</code> (first words of the file: sprite
+origin and row count, read in <code>bobs.js</code>
+<code>draw</code>).</p>
+<p><strong>3D meshes</strong> (<code>.3dm</code>, magic
+<code>3DM!</code>; format in section 4.1 and <code>REVERSE.md</code>):
+<code>scenebis</code> (0x308af, 514,568 bytes), <code>cirk4</code>
+(0xf7d91, 425,374), <code>line3</code> (0x1841a5, 83,540),
+<code>poto4</code> (0x1af7e4, 126,688), <code>meduse2</code> (0x1ce6c4,
+618,118). Vertices are <code>i16 x3</code>; there is no per-face colour,
+textures come from the materials and per-vertex <code>(u, v)</code>.
+Counts per file are in the table of section 4.1. <strong>Point
+clouds</strong> (no magic, <code>u16 n</code> then
+<code>n x (x, y, z, w) i16</code>, w = 0 or 3 which picks the sprite):
+<code>debut</code>, <code>debut2</code> (773 points, 6,186 bytes),
+<code>fleur</code>, <code>fleur2</code>, <code>fleur3</code> (200
+points, 1,602 bytes), <code>final</code> (586 points, 4,690 bytes); same
+point order inside the pairs so they morph point by point.</p>
+<p><strong>Fonts.</strong> The demo has no font file: all lettering
+(OXYGENE, the credit logos, GREETS, the title strips) is pre-drawn GIF
+art. The text screen at the end prints <code>contrast.txt</code> (766
+bytes) with the BIOS font.</p>
+<p><strong>Previews.</strong> Copies of the existing contact sheets made
+by the original tooling are in <code>figures/</code> (not generated by
+this write-up; the GIF sheet is labelled with file names, 32 tiles):</p>
+<p><img src="figures/gifs.png"
+alt="The 32 GIFs of CONTRAST.BIN, each labelled with its file name" /></p>
+<p><img src="figures/cpl.png"
+alt="Shade-table contact sheet (cpl.png from the original tooling)" /></p>
+<p><img src="figures/cpl2.png"
+alt="Second shade-table contact sheet (cpl2.png)" /></p>
+<p>Frames of the recorded run: <a
+href="https://github.com/kassoulet/Contrast_by_Oxygene/blob/main/oxg_out/shots/sheet1.png"><code>oxg_out/shots/sheet1.png</code></a>
+and <a
+href="https://github.com/kassoulet/Contrast_by_Oxygene/blob/main/oxg_out/shots/sheet_rec.png"><code>sheet_rec.png</code></a>.
+No per-asset PNGs were generated.</p>
+</body>
+</html>

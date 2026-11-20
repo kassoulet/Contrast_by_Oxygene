@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>CONTRAST (Oxygene, 1996) - asm snippets worth reading</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+  :root{--bg:#fff;--fg:#1d1d22;--mut:#666;--ac:#c4155a;--code:#f3f3f6;--bd:#d8d8e0}
+  @media (prefers-color-scheme:dark){:root{--bg:#0b0b10;--fg:#d8d8e0;--mut:#9a9aa8;--ac:#ff6a9a;--code:#17171f;--bd:#33333f}}
+  *{box-sizing:border-box}
+  body{margin:0 auto;max-width:62rem;padding:0 16px;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif}
+  #wunav{display:flex;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:8px;border-bottom:1px solid var(--bd);font-size:14px}
+  a{color:var(--ac)}
+  h1,h2,h3,h4{line-height:1.25;margin-top:1.8em}
+  img{max-width:100%;height:auto;image-rendering:auto}
+  pre{background:var(--code);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;overflow-x:auto;font-size:13px;line-height:1.4}
+  code{background:var(--code);padding:1px 4px;border-radius:3px;font-size:.92em;overflow-wrap:anywhere}
+  pre code{background:none;padding:0;overflow-wrap:normal}
+  table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%}
+  td,th{border:1px solid var(--bd);padding:4px 8px}
+  blockquote{border-left:3px solid var(--bd);margin-left:0;padding-left:14px;color:var(--mut)}
+  #TOC{font-size:14px}#TOC ul{padding-left:1.2em}
+  #TOC>ul{padding-left:0;list-style:none}
+  details#toc-box{margin:12px 0}
+  </style>
+</head>
+<body>
+<nav id="wunav"><a href="../index.html">&larr; the demo</a> <a href="WRITEUP-asm.html">asm</a> <a href="WRITEUP-effects.html">effects</a> <a href="https://github.com/kassoulet/Contrast_by_Oxygene">README on GitHub</a></nav>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#contrast-oxygene-1996---asm-snippets-worth-reading"
+id="toc-contrast-oxygene-1996---asm-snippets-worth-reading">CONTRAST
+(Oxygene, 1996) - asm snippets worth reading</a>
+<ul>
+<li><a href="#1-timer-locked-to-the-retrace-0x102cb-0x102db"
+id="toc-1-timer-locked-to-the-retrace-0x102cb-0x102db">1. Timer locked
+to the retrace (0x102CB, 0x102DB)</a></li>
+<li><a
+href="#2-self-modifying-swirl-the-step-lives-in-the-instruction-stream-0x11fb7-loop-0x120b7"
+id="toc-2-self-modifying-swirl-the-step-lives-in-the-instruction-stream-0x11fb7-loop-0x120b7">2.
+Self-modifying swirl: the step lives in the instruction stream (0x11FB7,
+loop 0x120B7)</a></li>
+<li><a
+href="#3-the-textured-span-carry-as-the-fixed-point-carry-pixel-counter-in-the-same-register-0x17855-area-loop-0x18095"
+id="toc-3-the-textured-span-carry-as-the-fixed-point-carry-pixel-counter-in-the-same-register-0x17855-area-loop-0x18095">3.
+The textured span: carry as the fixed-point carry, pixel counter in the
+same register (0x17855 area, loop 0x18095)</a></li>
+<li><a
+href="#4-pair-multiply-projection-0x15150-the-vertex-loop-of-0x14de0"
+id="toc-4-pair-multiply-projection-0x15150-the-vertex-loop-of-0x14de0">4.
+Pair-multiply projection (0x15150, the vertex loop of 0x14DE0)</a></li>
+<li><a
+href="#5-the-depth-sort-two-passes-of-linked-lists-no-array-copy-0x132490x132bb"
+id="toc-5-the-depth-sort-two-passes-of-linked-lists-no-array-copy-0x132490x132bb">5.
+The depth sort: two passes of linked lists, no array copy
+(0x13249..0x132BB)</a></li>
+<li><a
+href="#6-four-pixels-added-at-once-glow-without-clamping-0x18b660x18b8a-greetings-orbs"
+id="toc-6-four-pixels-added-at-once-glow-without-clamping-0x18b660x18b8a-greetings-orbs">6.
+Four pixels added at once, glow without clamping (0x18B66..0x18B8A,
+greetings orbs)</a></li>
+<li><a href="#7-the-z-test-that-is-also-the-pixel-write-0x19cd3-bobs"
+id="toc-7-the-z-test-that-is-also-the-pixel-write-0x19cd3-bobs">7. The
+z-test that is also the pixel write (0x19CD3, bobs)</a></li>
+<li><a
+href="#8-two-pixels-per-16-bit-operation-the-trail-filter-0x16a13-filter-of-0x169b0"
+id="toc-8-two-pixels-per-16-bit-operation-the-trail-filter-0x16a13-filter-of-0x169b0">8.
+Two pixels per 16-bit operation: the trail filter (0x16A13, filter of
+0x169B0)</a></li>
+<li><a href="#9-the-ripple-two-multiplies-per-2x2-block-0x101410x10195"
+id="toc-9-the-ripple-two-multiplies-per-2x2-block-0x101410x10195">9. The
+ripple: two multiplies per 2x2 block (0x10141..0x10195)</a></li>
+<li><a href="#10-dissolve-from-a-picture-0x10010-0x10064"
+id="toc-10-dissolve-from-a-picture-0x10010-0x10064">10. Dissolve from a
+picture (0x10010, 0x10064)</a></li>
+<li><a href="#11-the-thick-line-0x147520x14780"
+id="toc-11-the-thick-line-0x147520x14780">11. The thick line
+(0x14752..0x14780)</a></li>
+<li><a href="#12-truncating-float-to-int-cast-0x1f3d0"
+id="toc-12-truncating-float-to-int-cast-0x1f3d0">12. Truncating
+float-to-int cast (0x1F3D0)</a></li>
+<li><a href="#not-covered" id="toc-not-covered">Not covered</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="contrast-oxygene-1996---asm-snippets-worth-reading">CONTRAST
+(Oxygene, 1996) - asm snippets worth reading</h1>
+<p>All addresses are linear addresses of object 1 (the code) of
+<code>CONTRAST.EXE</code>, which is a DOS/4GW-bound <strong>LE</strong>
+executable built with Watcom C/C++32 (not packed:
+<code>oxg_tools/le.py</code> parses the LE and builds the flat image,
+code at 0x10000, data at 0x30000). <code>oxg_out/code.bin</code> /
+<code>code.asm</code> is that code object disassembled. For this
+write-up I re-listed every snippet below from
+<code>oxg_out/code.bin</code> with
+<code>objdump -D -b binary -mi386 -M intel --adjust-vma=0x10000</code>
+(capstone is not installed here) and cross-checked it against the
+<code>ndisasm</code> listing in <code>code.asm</code>; the two agree.
+Comments are mine. Watcom register convention: arguments in EAX, EDX,
+EBX, ECX, then the stack.</p>
+<p>The code is a 1996 software engine for a 486/Pentium: integer only
+for the pixels and the 3D (x87 only at load time and for tables), 16.16
+fixed point, lots of self-modifying code. The tricks are period-typical,
+a few are neat.</p>
+<hr />
+<h2 id="1-timer-locked-to-the-retrace-0x102cb-0x102db">1. Timer locked
+to the retrace (0x102CB, 0x102DB)</h2>
+<pre><code>102db: cli
+       ...
+10312: mov dx,0x3da
+10316: in al,dx / test al,8 / jz 10316        ; wait for retrace start
+1031b: in al,dx / test al,8 / jnz 1031b       ; wait for its end
+10320: loop 10316                             ; ecx = 3 retraces
+10322: mov al,0x36 / out 0x43,al / xor al,al / out 0x40,al / out 0x40,al   ; PIT channel 0, mode 3, count 0
+       ... wait one more retrace, latch the counter (xor al,al / out 0x43,al / in al,0x40 ...)
+
+102cb: push eax
+102cc: mov eax,[0x44e20]        ; tick counter, incremented by the demo&#39;s own IRQ0 handler
+102d1: cmp eax,[0x44e20]        ; spin until it changes
+102d7: je 102d1
+102d9: pop eax / ret</code></pre>
+<p>The program measures one retrace period with the PIT and re-programs
+IRQ0 to fire once per video frame (<code>oxg_out/REVERSE.md</code>).
+From then on <code>[0x44E20]</code> is a frame counter, and "wait for
+the next frame" is a three-instruction spin with no port access. It also
+makes the animation clock: a second counter gives the ticks that passed
+during an iteration, so a slow machine skips frames instead of slowing
+the music (<code>oxg_out/EFFECTS.md</code>, section 2).</p>
+<h2
+id="2-self-modifying-swirl-the-step-lives-in-the-instruction-stream-0x11fb7-loop-0x120b7">2.
+Self-modifying swirl: the step lives in the instruction stream (0x11FB7,
+loop 0x120B7)</h2>
+<p>Setup writes the same 32-bit step into the immediate of four
+<code>add ecx,imm32</code>:</p>
+<pre><code>11fcf: mov [0x3010c],ecx
+11fd5: mov esi,0x120c9 / mov [esi],ecx         ; immediates of the four adds below
+11fdc: mov esi,0x120e1 / mov [esi],ecx
+11fe3: mov esi,0x120fc / mov [esi],ecx
+11fea: mov esi,0x12114 / mov [esi],ecx</code></pre>
+<p>Then the inner loop (one of four unrolled pixels; the others are
+identical, imm bytes show the file image's placeholder):</p>
+<pre><code>120b7: mov bh,ch                 ; bh = integer part of u
+120b9: mov bl,al                 ; bl = integer part of v
+120bb: mov bx,[edi+ebx*2]        ; 64K-entry polar map: (u,v) -&gt; texture offset
+120bf: add bx,0xfff              ; immediate patched with the animation offset
+120c4: mov dh,[ebx+ebp]          ; texel
+120c7: add ecx,0xfffffff         ; patched step: fractional part in the high half, v step in the low half
+120cd: adc al,ah                 ; carry out of the fraction feeds the integer part of the other coordinate
+   ... three more pixels ...
+1211a: sub esi,4
+1211d: mov [esi],edx             ; four pixels in one dword
+1211f: mov [esi-0x140],edx       ; and the same four pixels one line up</code></pre>
+<p>Why it is nice: per pixel there is one map read and one texture read,
+no multiply and no shift; the position is two bytes of a register pair
+(<code>ch</code> and <code>al</code> are the table address bytes)
+advanced by one <code>add</code> plus one <code>adc</code>, with the
+step baked into the code so no register or memory operand holds it. Four
+pixels are packed in <code>edx</code> and stored with one
+<code>mov</code>, twice (two rows per computed row). Four routines with
+slightly different patched constants implement the variants selected by
+the music state (the port's <code>variant</code> 0..3,
+<code>src/swirl.js</code>).</p>
+<h2
+id="3-the-textured-span-carry-as-the-fixed-point-carry-pixel-counter-in-the-same-register-0x17855-area-loop-0x18095">3.
+The textured span: carry as the fixed-point carry, pixel counter in the
+same register (0x17855 area, loop 0x18095)</h2>
+<p>Setup, per span:</p>
+<pre><code>18072: rol edx,16 / rol ecx,16   ; fractions of v and u into the high words
+18078: mov bh,dl                 ; integer part of v
+1807a: mov bl,cl                 ; integer part of u  -&gt; bh:bl = address in a 256x256 texture
+1807c: dec ax / mov cx,ax        ; cx = width - 1 : the pixel counter, in the low half of ecx
+18081: mov dx,[edi+0x10]         ; low half of edx = shade level</code></pre>
+<p>Loop:</p>
+<pre><code>18095: mov al,[ebx+edi]          ; texel = texture[v:u]
+18098: mov ah,dh                 ; shade level (integer part of the shade)
+1809a: mov al,[eax+esi]          ; palette index = cpl[shade:texel]
+1809d: add ecx,0xfff0000         ; imm = (frac step of u &lt;&lt; 16) | 0xFFFF  (patched per triangle)
+180a3: adc bl,0xf                ; carry out of the fraction -&gt; integer part, plus the integer step
+180a6: mov [ebp+0],al            ; plot
+180a9: add edx,0xfff0000         ; imm = (frac step of v &lt;&lt; 16) | shade step
+180af: adc bh,0xf
+180b2: inc ebp
+180b3: or ch,ch                  ; bit 15 of the counter in cx: loop ends when it goes negative
+180b5: jns 18095</code></pre>
+<p>Why it is nice: <code>bh:bl</code> <em>are</em> the texture address,
+so there is no shift or mask per pixel; the shade is <code>dh</code> of
+the same register that accumulates the v fraction, and
+<code>mov ah,dh</code> builds the 64x256 shade-table index for free. The
+counter is the low word of <code>ecx</code>: since the immediate's low
+word is 0xFFFF (-1), the same <code>add</code> that advances u also
+decrements the counter, and <code>or ch,ch / jns</code> tests its sign.
+Side effect, which the port reproduces (<code>src/fill.js</code>): a
+carry from the counter into the high half on every pixel except the
+last, so the fractional step of u is effectively one unit larger. Eleven
+instructions per textured, lit pixel with no multiply.</p>
+<h2
+id="4-pair-multiply-projection-0x15150-the-vertex-loop-of-0x14de0">4.
+Pair-multiply projection (0x15150, the vertex loop of 0x14DE0)</h2>
+<pre><code>15150: mov ebp,[esp+0x44]        ; M0
+15154: mov eax,[ebx]             ; x
+15156: add ebp,eax               ; M0 + x
+15158: mov edx,[ebx+4]           ; z
+1515b: mov [esp+0xb0],ebp
+15162: mov ebp,[esp+0x40]        ; M1
+15166: add ebp,edx               ; M1 + z
+15168: imul ebp,[esp+0xb0]       ; (M0+x)(M1+z)
+15170: mov esi,[ebx+0xc]         ; x*z, cached in the vertex record
+15173: sub ebp,esi               ; - x*z
+15175: sub ebp,[esp+0xcc]        ; - M0*M1, computed once per object
+1517c: mov ecx,[ebx+8]           ; y
+15186: mov ebp,[esp+0x48] / imul ebp,ecx       ; M2*y
+15194: ... add ebp,[esp+0xb0]
+151a2: sar ebp,7</code></pre>
+<p><code>(M0 + x)(M1 + z) - x*z - M0*M1 = M0*z + M1*x</code>, so a
+three-term dot product costs two <code>imul</code> instead of three: the
+<code>x*z</code> product is stored in the vertex when the mesh is loaded
+(and <code>nx*ny</code> for normals), <code>M0*M1</code> is computed
+once per object. This is Winograd's inner-product trick, worthwhile when
+<code>imul</code> is ~10 cycles. The port's <code>prepare.js</code>
+states the identity in its header and <code>particles</code> use it
+again with 16-bit matrices (0x197C2). The camera's y row is scaled by
+512/596 elsewhere for the 4:3 aspect.</p>
+<h2
+id="5-the-depth-sort-two-passes-of-linked-lists-no-array-copy-0x132490x132bb">5.
+The depth sort: two passes of linked lists, no array copy
+(0x13249..0x132BB)</h2>
+<p>Nodes of 10 bytes (pointer 4, 16-bit key 2, link 4) at 0x4CC5C,
+bucket heads at 0x58FAC and 0x4C85C.</p>
+<pre><code>13249: imul ebx,eax,0xa           ; node = 0x4cc5c + 10*i
+1324c: mov dx,[ebx+0x4cc60]       ; key
+13253: xor dh,dh                  ; low byte
+13255: and edx,0xffff
+1325b: mov ecx,[edx*4+0x58fac]    ; old head of that bucket
+13263: mov [ebx+0x4cc62],ecx      ; node.next = old head
+13269: mov [edx*4+0x58fac],esi    ; head = node
+13270: add esi,0xa
+...
+13277: mov esi,0x3fc              ; pass 2: buckets from the highest
+13280: mov ebx,[edx+0x58fac]
+1328e: mov bx,[eax+4]             ; key of the popped node
+13292: mov ecx,[eax+6]            ; its link
+13295: sar ebx,8                  ; high byte
+13298: mov [edx+0x58fac],ecx      ; pop
+132aa: mov ecx,[ebx*4+0x4c85c]
+132b1: mov [eax+6],ecx            ; push on the list of the high byte
+132b4: mov [ebx*4+0x4c85c],eax</code></pre>
+<p>A radix sort on a 16-bit key in two passes, built from singly linked
+lists: pushing a node on a bucket is three moves, and pass 2 moves each
+node from one table to the other by pointer, so nothing is copied or
+compared. The key is the <em>negated</em> depth, so ascending order is
+far-to-near for the painter's algorithm. The port substitutes a stable
+sort on the same 16-bit key and matches the original's output on
+recorded frames (<code>test_sort.js</code> per
+<code>oxg_out/EFFECTS.md</code>).</p>
+<h2
+id="6-four-pixels-added-at-once-glow-without-clamping-0x18b660x18b8a-greetings-orbs">6.
+Four pixels added at once, glow without clamping (0x18B66..0x18B8A,
+greetings orbs)</h2>
+<pre><code>18b66: mov edx,0x18               ; 24 dwords = 96 pixels per row
+18b6b: mov ecx,[ebx]              ; four sprite bytes
+18b6d: mov ebp,[eax]              ; four screen pixels
+18b6f: add eax,4
+18b72: add ebx,4
+18b75: add ebp,ecx                ; four additions, carries run into the neighbouring byte
+18b77: dec edx
+18b78: mov [eax-4],ebp
+18b7b: test dx,dx / jg 18b6b
+18b80: inc esi / add eax,0xe0 / cmp si,0x60 / jl 18b66     ; next row (320 - 96 = 0xe0 bytes on)</code></pre>
+<p>SWAR (SIMD within a register) on a 486: one <code>add</code> is four
+additive-blend pixels. The byte carries are harmless because the palette
+is built so that overflow does not matter; there is no clamp, no lookup,
+six instructions per four pixels.</p>
+<h2 id="7-the-z-test-that-is-also-the-pixel-write-0x19cd3-bobs">7. The
+z-test that is also the pixel write (0x19CD3, bobs)</h2>
+<p>The screen is an array of 16-bit words
+<code>depth &lt;&lt; 8 | colour</code>:</p>
+<pre><code>19cd3: mov bx,[edi]              ; sprite word (colour bits)
+19cd6: add ebx,ecx               ; + depth &lt;&lt; 8
+19cd8: add edi,2
+19cdb: cmp [eax],bx              ; stored word vs new word, as signed 16-bit
+19cde: jge 19ce3                 ; stored is nearer or equal: keep it
+19ce0: mov [eax],bx              ; one store = depth write + colour write
+19ce3: add eax,2
+19ce6: dec dl
+19ce8: jne 19cd3</code></pre>
+<p>A z-buffer without a z-buffer: the depth is the high byte of the
+colour word, so a single compare is the depth test and a single store
+writes both. Adding the depth to the sprite word shades the ball by
+distance for free. A final pass gathers the low bytes of four words into
+one dword for the video write (<code>bswap</code>, in
+<code>oxg_out/EFFECTS.md</code>).</p>
+<h2
+id="8-two-pixels-per-16-bit-operation-the-trail-filter-0x16a13-filter-of-0x169b0">8.
+Two pixels per 16-bit operation: the trail filter (0x16A13, filter of
+0x169B0)</h2>
+<pre><code>16a13: mov ax,[edx]              ; two pixels of the previous picture
+16a16: add ax,[edx-0x13f]        ; + two pixels one line up and one to the right
+16a1d: shr ax,1                  ; average, both bytes at once
+16a20: add edx,2
+16a23: and eax,0x7f7f            ; 7 bits per pixel: kills the bit that crossed over
+16a28: and eax,0xffff
+16a2d: mov esi,edi
+16a32: mov ax,[esi+eax*2]        ; 64K-entry word table: both intensities lowered by 5
+16a37: mov [ebx-2],ax            ; into the next picture</code></pre>
+<p>Pixels are 7-bit gradient indices (the line colour is 0x7F), so
+<code>(a + b) &gt;&gt; 1</code> of a packed pair works with a mask: the
+bit shifted from the high byte into the low one lands in bit 7 and is
+removed by <code>&amp; 0x7F7F</code>. The same table lookup that decays
+the value (<code>lut[w]</code>, 128 x 256 words) decays both pixels in
+one read.</p>
+<h2 id="9-the-ripple-two-multiplies-per-2x2-block-0x101410x10195">9. The
+ripple: two multiplies per 2x2 block (0x10141..0x10195)</h2>
+<pre><code>1014b: mov ax,[ebp]               ; sine word for this column
+1014f: imul word [0x30034]        ; dx:ax = ax * (row weight * amplitude)    -&gt; dx = vertical offset
+10156: mov ecx,edx
+10158: xor eax,eax
+1015a: shl ecx,6
+1015d: shl edx,8
+10160: mov al,[ebx]               ; column weight byte
+10162: add ecx,edx                ; offset * 320 (= * 64 + * 256)
+10164: imul word [0x30036]        ; * (sine of the row phase * amplitude)    -&gt; dx = horizontal offset
+1016b: add ecx,edx
+1016d: shl ecx,0x10 / sar ecx,0x10  ; keep 16 bits, signed
+10173: mov dx,[ecx+edi+0x140]     ; two pixels of the next line, displaced
+1017e: mov ax,[ecx+edi]           ; two pixels
+10185: mov [esi+0x140],dx
+1018f: mov [esi],ax</code></pre>
+<p><code>imul word</code> leaves the high 16 bits in <code>dx</code>,
+i.e. the <code>&gt;&gt; 16</code> is free. <code>* 320</code> is
+<code>&lt;&lt; 6</code> plus <code>&lt;&lt; 8</code>. Pixels move two at
+a time (16-bit loads) and two lines at once (+0x140), so one iteration
+of two multiplies produces a 2x2 block. A cheap water-wobble transition.
+The port's <code>ripple</code> (<code>src/scene3.js</code>) is the same
+arithmetic.</p>
+<h2 id="10-dissolve-from-a-picture-0x10010-0x10064">10. Dissolve from a
+picture (0x10010, 0x10064)</h2>
+<pre><code>10027: mov cx,[esi+ebx*2]         ; count of pixels in group v
+1002b: or cx,cx / jz 10062
+10030: mov esi,[0x62a9c]
+10036: mov ax,[esi+ebx*2]         ; start of the group in the offset table
+1003a: mov esi,[0x6290c]
+10040: add eax,eax
+10042: add esi,eax                ; address of the first offset
+10044: mov ebp,[0x44e38]          ; destination picture
+1004a: mov edi,[0x62a80]          ; source picture
+10054: mov ax,[esi]               ; pixel offset
+10057: mov bl,[eax+edi]           ; source pixel
+1005a: mov [eax+ebp],bl           ; into the screen buffer
+1005d: add esi,2
+10060: loop 10054</code></pre>
+<p>At start-up the demo groups pixel offsets by the value of a 320x200
+GIF (<code>fond7</code>, <code>fond3</code>, <code>rip3</code>). At tick
+v the group of value v is copied: the <code>loop</code> instruction does
+the counting, and one 256-entry table of (start, count) turns any
+greyscale picture into a transition. The twin routine at 0x10064 clears
+instead of copying.</p>
+<h2 id="11-the-thick-line-0x147520x14780">11. The thick line
+(0x14752..0x14780)</h2>
+<pre><code>14752: mov [esp],esi               ; remaining pixels
+14755: mov ebp,[esp]
+14758: dec esi
+14759: test ebp,ebp / jng 147bc
+1475d: dec eax                     ; one pixel left
+1475e: mov [eax+1],bl              ; colour in bl (stack argument 0x7f)
+14761: mov [eax+2],bl
+14764: mov [eax],bl                ; three in a row ...
+14766: mov [eax+0x141],bl          ; ... one below the middle one
+1476c: sub edx,ecx                 ; error -= |dy|
+1476e: mov [eax-0x13f],bl          ; ... and one above it
+14774: test edx,edx / jg 14752     ; no y step yet
+14778: mov ebp,[esp+0x10]          ; +-320
+1477c: add edx,edi                 ; error += dx
+1477e: add eax,ebp                 ; y step</code></pre>
+<p>A Bresenham x-major loop that writes five pixels (a plus) per step,
+so the wireframe has thick, clearly visible lines without a second pass.
+The error update is interleaved with the stores; the y step costs only
+an add of +-320.</p>
+<h2 id="12-truncating-float-to-int-cast-0x1f3d0">12. Truncating
+float-to-int cast (0x1F3D0)</h2>
+<pre><code>1f3d2: fnstcw [esp]
+1f3d5: wait / push dword [esp]
+1f3d9: mov byte [esp+1],0x1f      ; control word high byte: round toward zero
+1f3de: fldcw [esp]
+1f3e1: frndint
+1f3e3: fldcw [esp+4]              ; restore</code></pre>
+<p>Watcom's <code>float -&gt; int</code> helper puts the x87 in truncate
+mode around <code>frndint</code>. All the tables the demo builds with
+<code>fsin</code>/<code>fcos</code>/<code>fsqrt</code> (the 4096-entry
+sine/cosine, the square roots, the camera's integer square root) are
+therefore <strong>truncated</strong>, not rounded. A port that rounds is
+off by one on many entries; <code>src/tables.js</code> uses
+<code>Math.trunc</code> for this reason.</p>
+<h2 id="not-covered">Not covered</h2>
+<p>The EXE has about 50 routines in the program proper (0x10000-0x19D3F)
+plus MIDAS and the Watcom runtime above it; I only list routines I read
+and could tie to the port. The polygon edge-table builder
+(self-modifying slopes) and the loader's x87 normal computation are
+described in <code>oxg_out/EFFECTS.md</code> but I did not extract a
+listing of them here.</p>
+</body>
+</html>
